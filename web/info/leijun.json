@@ -1,0 +1,7 @@
+{
+  "audios": [
+      { "title": "我记得", "src": "resources/audio/我记得.mp3" },
+      { "title": "南方姑娘", "src": "resources/audio/南方姑娘.mp3" },
+      { "title": "阴天快乐", "src": "resources/audio/阴天快乐.mp3" }
+  ]
+}

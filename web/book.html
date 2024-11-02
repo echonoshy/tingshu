@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>听舒｜Tingshu</title>
+    <link rel="icon" href="/web/assets/favicon-tin.ico" type="image/x-icon">
+    <style>
+      body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          background-color: #e9ecef;
+          margin: 0;
+      }
+      .player-container {
+          background-color: #ffffff;
+          padding: 30px;
+          box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.15);
+          border-radius: 12px;
+          width: 350px;
+          text-align: center;
+      }
+      .button-container {
+          display: flex;
+          justify-content: space-between;
+          gap: 10px; /* 设置按钮之间的间距 */
+          margin-top: 10px;
+      }
+      h2 {
+          color: #333;
+          margin-top: 0;
+          font-size: 24px;
+          letter-spacing: 1px;
+      }
+      .now-playing {
+          font-size: 14px;
+          color: #888;
+          margin: 10px 0;
+      }
+      audio {
+          width: 100%;
+          margin: 15px 0;
+          outline: none;
+          border-radius: 8px;
+          background-color: #f8f9fa;
+      }
+      button {
+          padding: 10px 18px;
+          margin: 5px;
+          font-size: 16px;
+          cursor: pointer;
+          border: none;
+          border-radius: 5px;
+          background-color: #007bff;
+          color: white;
+          transition: background-color 0.3s, transform 0.2s;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+      }
+      button:hover {
+          background-color: #0056b3;
+          transform: scale(1.05);
+      }
+      button:active {
+          transform: scale(1);
+      }
+      .playlist {
+          margin-top: 20px;
+          max-height: 200px;
+          overflow-y: auto;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          background-color: #f8f9fa;
+          padding: 10px;
+      }
+      .playlist-item {
+          padding: 8px 10px;
+          cursor: pointer;
+          border-bottom: 1px solid #eee;
+          transition: background-color 0.2s;
+          display: flex;
+          align-items: center;
+          color: #333;
+      }
+      .playlist-item:last-child {
+          border-bottom: none;
+      }
+      .playlist-item:hover {
+          background-color: #e9ecef;
+      }
+      .playlist-item.active {
+          background-color: #cce5ff;
+          font-weight: bold;
+          color: #004085;
+      }
+      .playlist-item i {
+          margin-right: 8px;
+          color: #007bff;
+      }
+  </style>
+</head>
+<body>
+    <div class="player-container">
+        <h2>听舒</h2>
+        <div class="now-playing" id="nowPlaying">当前播放: </div>
+        <audio id="audioPlayer" controls>
+            您的浏览器不支持 audio 元素。
+        </audio>
+        <div class="button-container">
+          <button onclick="prevTrack()">
+              <i class="fas fa-backward"></i> 上一曲
+          </button>
+          <button onclick="nextTrack()">
+              下一曲 <i class="fas fa-forward"></i>
+          </button>
+      </div>
+        <div class="playlist" id="playlist"></div>
+    </div>
+
+    <script>
+        // 获取 URL 参数
+        function getUrlParameter(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        const bookId = getUrlParameter('bookId'); // 获取书籍 ID
+        let playlist = [];
+        let currentTrack = 0;
+        const audioPlayer = document.getElementById("audioPlayer");
+        const playlistContainer = document.getElementById("playlist");
+        const nowPlayingText = document.getElementById("nowPlaying");
+
+        // 加载对应书籍的录音文件列表
+        if (bookId) {
+            const filePath = `info/${bookId}.json`;
+            
+            // 发起 AJAX 请求加载音频数据
+            fetch(filePath)
+                .then(response => response.json())
+                .then(data => {
+                    playlist = data.audios; // 假设 JSON 中的音频列表在 "audios" 属性中
+                    renderPlaylist();
+                    playCurrentTrack();
+                })
+                .catch(error => {
+                    console.log("加载音频数据失败:", error);
+                    alert("无法加载音频数据，请检查文件路径或网络连接。");
+                });
+        } else {
+            console.log("未提供 bookId 参数");
+        }
+
+        // 渲染播放列表
+        function renderPlaylist() {
+            playlistContainer.innerHTML = playlist.map((track, index) => `
+                <div class="playlist-item ${index === currentTrack ? 'active' : ''}" 
+                     onclick="playTrack(${index})">
+                    ${track.title}
+                </div>
+            `).join('');
+            updateNowPlaying();
+        }
+
+        // 更新当前播放信息
+        function updateNowPlaying() {
+            nowPlayingText.textContent = `当前播放: ${playlist[currentTrack]?.title || '未知'}`;
+        }
+
+        // 播放指定索引的音频
+        function playTrack(index) {
+            currentTrack = index;
+            playCurrentTrack();
+        }
+
+        // 播放当前选定的音频
+        function playCurrentTrack() {
+            if (playlist[currentTrack]) {
+                audioPlayer.src = playlist[currentTrack].src;
+                audioPlayer.play().catch(error => console.log("播放失败:", error));
+                renderPlaylist();
+            }
+        }
+
+        // 播放上一曲
+        function prevTrack() {
+            currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+            playCurrentTrack();
+        }
+
+        // 播放下一曲
+        function nextTrack() {
+            currentTrack = (currentTrack + 1) % playlist.length;
+            playCurrentTrack();
+        }
+
+        // 音频结束时自动播放下一曲
+        audioPlayer.addEventListener("ended", nextTrack);
+
+        // 处理音频加载错误
+        audioPlayer.addEventListener("error", function(e) {
+            console.log("音频加载错误:", e);
+            alert("音频加载失败，请检查文件路径是否正确");
+        });
+    </script>
+</body>
+</html>

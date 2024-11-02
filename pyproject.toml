@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "听舒｜tingshu"
 readme = "README.md"
 requires-python = ">=3.10"
-keywords = ["TTS", "Speech"]
+keywords = ["TTS", "Speech", "Voice clone"]
 license = {text = "CC BY-NC-SA 4.0"}
 classifiers = [
     "Programming Language :: Python :: 3",

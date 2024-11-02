@@ -1,164 +1,197 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tingshu｜听舒 v0.1</title>
+    <title>听舒｜Tingshu</title>
+    <link rel="icon" href="/web/assets/favicon-tin.ico" type="image/x-icon">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .header {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+            text-align: center;
+            margin-bottom: 40px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .logo {
+            width: 100px;
+        }
+        
+        .header-text {
+            font-weight: bold;
+            text-align: left;
+            line-height: 1.5;
+        }
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 20px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        .tags {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 8px 16px;
+            background-color: white;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            /* white-space: nowrap; */
+            word-break: break-all;
+        }
+
+        .tag:hover {
+            background-color: #e6e6e6;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .books-grid {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            margin: 0;
-        }
-        .player-container {
-            background-color: #ffffff;
+            flex-wrap: wrap;         /* 允许换行 */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 30px;
             padding: 20px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            width: 300px;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            width: 240px;            /* 卡片宽度 */
+            text-align: center;      /* 文本居中 */
+            padding: 15px;
             text-align: center;
-        }
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
             cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            transition: background-color 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        button:hover {
-            background-color: #45a049;
+
+        .book-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        .playlist {
-            margin-top: 20px;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+
+        .book-cover {
+            width: 120px;
+            height: 160px;
+            margin-bottom: 10px;
+            object-fit: cover;
+            border-radius: 4px;
         }
-        .playlist-item {
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.2s;
-            text-align: left;
-        }
-        .playlist-item:last-child {
-            border-bottom: none;
-        }
-        .playlist-item:hover {
-            background-color: #f5f5f5;
-        }
-        .playlist-item.active {
-            background-color: #e0e0e0;
-        }
-        audio {
-            width: 100%;
-            margin: 10px 0;
-        }
-        h2 {
-            color: #333;
-            margin-top: 0;
-        }
-        .now-playing {
+
+        .book-title {
             font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .book-author {
+            font-size: 12px;
             color: #666;
-            margin: 10px 0;
+            margin-bottom: 5px;
+        }
+
+        .reading-status {
+            font-size: 12px;
+            color: #999;
         }
     </style>
 </head>
 <body>
-    <div class="player-container">
-        <h2>音频播放器</h2>
-        <div class="now-playing" id="nowPlaying">当前播放: </div>
-        <audio id="audioPlayer" controls>
-            您的浏览器不支持 audio 元素。
-        </audio>
-        <div>
-            <button onclick="prevTrack()">上一曲</button>
-            <button onclick="nextTrack()">下一曲</button>
+    <div class="header">
+        <img src="assets/logo.svg" alt="听舒｜Tingshu" class="logo">
+        <div class="header-text">
+            听舒｜Tingshu <br>Bringing the author’s voice directly to you 
         </div>
-        <div class="playlist" id="playlist"></div>
     </div>
 
-    <script>
-        // 音频文件列表
-        const playlist = [
-            { title: "录音 1", src: "audio1.mp3" },
-            { title: "录音 2", src: "audio2.mp3" },
-            { title: "录音 3", src: "audio3.mp3" },
-            { title: "录音 4", src: "audio4.mp3" },
-            { title: "录音 5", src: "audio5.mp3" }
-        ];
-        
-        let currentTrack = 0;
-        const audioPlayer = document.getElementById("audioPlayer");
-        const playlistContainer = document.getElementById("playlist");
-        const nowPlayingText = document.getElementById("nowPlaying");
+    <div class="search-container">
+        <input type="text" placeholder="🔍 搜索" class="search-input">
+    </div>
 
-        // 渲染播放列表
-        function renderPlaylist() {
-            playlistContainer.innerHTML = playlist.map((track, index) => `
-                <div class="playlist-item ${index === currentTrack ? 'active' : ''}" 
-                     onclick="playTrack(${index})">
-                    ${track.title}
-                </div>
-            `).join('');
-            updateNowPlaying();
-        }
+    <div class="tags">
+        <span class="tag">🌟最近热搜（功能开发中）</span>
+        <span class="tag">雷军</span>
+        <!-- <span class="tag">素食者</span>
+        <span class="tag">失落的卫星</span>
+        <span class="tag">一个人的朝圣</span> -->
+    </div>
 
-        // 更新当前播放信息
-        function updateNowPlaying() {
-            nowPlayingText.textContent = `当前播放: ${playlist[currentTrack].title}`;
-        }
+    <div class="section-header">
+        <h2 class="section-title">全部</h2>
+    </div>
 
-        // 播放指定索引的音频
-        function playTrack(index) {
-            currentTrack = index;
-            playCurrentTrack();
-        }
+    <div class="books-grid">
+        <div class="book-card" onclick="location.href='book.html?bookId=leijun'">
+            <img src="resources/cover/Leijun.jpg?param=300x300" alt="小米创业思考" class="book-cover">
+            <div class="book-title">小米创业思考</div>
+            <div class="book-author">雷军 徐洁云</div>
+            <div class="reading-status">20.9万字</div>
+        </div>
+        <div class="book-card" onclick="location.href='book.html?bookId=jobs'">
+            <img src="resources/cover/Jobs.jpg?param=300x300" alt="斯蒂夫-乔布斯传" class="book-cover">
+            <div class="book-title">斯蒂夫-乔布斯传</div>
+            <div class="book-author">沃尔特-艾萨克森</div>
+            <div class="reading-status">46.6万字</div>
+        </div>
+        <div class="book-card" onclick="location.href='book.html?bookId=drucker'">
+            <img src="resources/cover/Drucker.jpg?param=300x300" alt="卓有成效的管理者" class="book-cover">
+            <div class="book-title">卓有成效的管理者</div>
+            <div class="book-author">彼得-德鲁克</div>
+            <div class="reading-status">11.4万字</div>
+        </div>
+        <div class="book-card" onclick="location.href='book.html?bookId=musk'">
+            <img src="resources/cover/Musk.jpg?param=300x300" alt="硅谷钢铁侠：埃隆-马斯克" class="book-cover">
+            <div class="book-title">硅谷钢铁侠：埃隆-马斯克</div>
+            <div class="book-author">阿什利-万顿</div>
+            <div class="reading-status">24.8万字</div>
+        </div>
+    </div>
 
-        // 播放当前选定的音频
-        function playCurrentTrack() {
-            audioPlayer.src = playlist[currentTrack].src;
-            audioPlayer.play()
-                .catch(error => {
-                    console.log("播放失败:", error);
-                });
-            renderPlaylist();
-        }
-
-        // 播放上一曲
-        function prevTrack() {
-            currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
-            playCurrentTrack();
-        }
-
-        // 播放下一曲
-        function nextTrack() {
-            currentTrack = (currentTrack + 1) % playlist.length;
-            playCurrentTrack();
-        }
-
-        // 音频结束时自动播放下一曲
-        audioPlayer.addEventListener("ended", nextTrack);
-
-        // 处理音频加载错误
-        audioPlayer.addEventListener("error", function(e) {
-            console.log("音频加载错误:", e);
-            alert("音频加载失败，请检查文件路径是否正确");
-        });
-
-        // 初始化
-        audioPlayer.src = playlist[currentTrack].src;
-        renderPlaylist();
-    </script>
 </body>
 </html>
