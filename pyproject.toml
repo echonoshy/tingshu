@@ -1,13 +1,16 @@
 [project]
 name = "tingshu"
 version = "0.1.0"
-description = "听舒｜tingshu"
+description = "Tingshu TTS System"
 readme = "README.md"
 requires-python = ">=3.10"
 keywords = ["TTS", "Speech", "Voice clone"]
 license = {text = "CC BY-NC-SA 4.0"}
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
     "numpy<=1.26.4",
@@ -27,31 +30,27 @@ dependencies = [
     "uvicorn>=0.30.0",
     "loguru>=0.6.0",
     "loralib>=0.1.2",
-    "natsort>=8.4.0",
     "pyrootutils>=1.0.4",
     "vector_quantize_pytorch>=1.14.24",
     "resampy>=0.4.3",
     "einx[torch]==0.2.2",
     "zstandard>=0.22.0",
-    "pydub",
-    "pyaudio",
-    "faster_whisper",
+    "pydub>=0.25.1",
+    "pyaudio>=0.2.11",
+    "faster_whisper>=0.1",
     "modelscope==1.17.1",
     "funasr==1.1.5",
     "opencc-python-reimplemented==0.1.7",
-    "silero-vad",
-    "ormsgpack",
+    "silero-vad>=0.4.1",
+    "ormsgpack>=0.6.0",
 ]
 
 [project.optional-dependencies]
 stable = [
     "torch<=2.4.1",
-    "torchaudio",
+    "torchaudio>=0.11.0",
 ]
 
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools>=42", "setuptools-scm>=6.0"]
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-packages = ["tingshu", "tools"]
