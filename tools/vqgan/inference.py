@@ -6,12 +6,17 @@ import numpy as np
 import soundfile as sf
 import torch
 import torchaudio
+import pyrootutils
+
 from hydra import compose, initialize
 from hydra.utils import instantiate
 from loguru import logger
 from omegaconf import OmegaConf
 
 from tools.file import AUDIO_EXTENSIONS
+
+pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
+
 
 # register eval resolver
 OmegaConf.register_new_resolver("eval", eval)
@@ -49,7 +54,8 @@ def load_model(config_name, checkpoint_path, device="cuda"):
 @click.option(
     "--input-path",
     "-i",
-    default="test.wav",
+    # default="test.wav",
+    default="resources/leijun/leijun.wav",
     type=click.Path(exists=True, path_type=Path),
 )
 @click.option(
@@ -118,4 +124,7 @@ def main(input_path, output_path, config_name, checkpoint_path, device):
 
 
 if __name__ == "__main__":
+    import os, sys
+    print(sys.path)
+    print(os.getcwd())
     main()
