@@ -1,1 +1,124 @@
 *.egg-info
+*.tar.gz*
+weights/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# PyInstaller
+# 生成的二进制文件
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+.dmypy.json.5
+
+# Pyre
+.pyre/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyright
+pyrightconfig.json
+
+# Environments
+# .env 文件常用来保存环境变量，为了安全通常应忽略
+.env
+.env.*
+*.env
+
+# IDEs and editors
+# 忽略常见的 IDE 配置文件夹
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# Temporary files
+*.temp
+*.tmp
+*.bak
+*.swp
+*.swo
+*.orig
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+
+
+
+# Pylint
+pylint.log
+
+
+# Ignore downloaded and generated weights
+weights/
+weights.tar.gz

@@ -241,7 +241,7 @@ def normalize_text(user_input, use_normalization):
 
 
 def update_examples():
-    examples_dir = Path("references")
+    examples_dir = Path("resources")
     examples_dir.mkdir(parents=True, exist_ok=True)
     example_audios = list_files(examples_dir, AUDIO_EXTENSIONS, recursive=True)
     return gr.Dropdown(choices=example_audios + [""])
@@ -488,7 +488,7 @@ def parse_args():
     parser.add_argument(
         "--decoder-checkpoint-path",
         type=Path,
-        default="weigths/gan-vq-fsq-8x1024-21hz-generator.pth",
+        default="weights/firefly-gan-vq-fsq-8x1024-21hz-generator.pth",
     )
     parser.add_argument("--decoder-config-name", type=str, default="gan_vq")
     parser.add_argument("--device", type=str, default="cuda")

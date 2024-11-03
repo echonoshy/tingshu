@@ -1,7 +1,0 @@
-{
-  "audios": [
-      { "title": "录音 1", "src": "path/to/audio1.mp3" },
-      { "title": "录音 2", "src": "path/to/audio2.mp3" },
-      { "title": "录音 3", "src": "path/to/audio3.mp3" }
-  ]
-}

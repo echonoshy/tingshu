@@ -7,7 +7,8 @@ DEFAULT_LANGUAGE = "en_US"
 
 
 def load_language_list(language):
-    with open(I18N_FILE_PATH / f"{language}.json", "r", encoding="utf-8") as f:
+    # with open(I18N_FILE_PATH / f"{language}.json", "r", encoding="utf-8") as f:
+    with open(I18N_FILE_PATH / f"zh_CN.json", "r", encoding="utf-8") as f:
         language_list = json.load(f)
 
     return language_list
