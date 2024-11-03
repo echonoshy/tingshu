@@ -41,7 +41,6 @@ def versions_html():
     hash = commit.strip("'").split(" ")[0]
 
     return f"""
-version: <a href="https://github.com/fishaudio/fish-speech/commit/{hash}">{hash}</a>
 &#x2000;•&#x2000;
 python: <span title="{sys.version}">{python_version}</span>
 &#x2000;•&#x2000;
@@ -49,7 +48,6 @@ torch: {getattr(torch, '__long_version__',torch.__version__)}
 &#x2000;•&#x2000;
 gradio: {gr.__version__}
 &#x2000;•&#x2000;
-author: <a href="https://github.com/fishaudio">fishaudio</a>
 """
 
 

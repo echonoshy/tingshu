@@ -36,11 +36,7 @@ from tools.vqgan.inference import load_model as load_decoder_model
 os.environ["EINX_FILTER_TRACEBACK"] = "false"
 
 
-HEADER_MD = f"""# Fish Speech
-
-{i18n("A text-to-speech model based on VQ-GAN and Llama developed by [Fish Audio](https://fish.audio).")}  
-
-{i18n("You can find the source code [here](https://github.com/fishaudio/fish-speech) and models [here](https://huggingface.co/fishaudio/fish-speech-1.4).")}  
+HEADER_MD = f"""# Tingshu | 听舒 
 
 {i18n("Related code and weights are released under CC BY-NC-SA 4.0 License.")}  
 
@@ -487,14 +483,14 @@ def parse_args():
     parser.add_argument(
         "--llama-checkpoint-path",
         type=Path,
-        default="checkpoints/fish-speech-1.4",
+        default="weights",
     )
     parser.add_argument(
         "--decoder-checkpoint-path",
         type=Path,
-        default="checkpoints/fish-speech-1.4/firefly-gan-vq-fsq-8x1024-21hz-generator.pth",
+        default="weigths/gan-vq-fsq-8x1024-21hz-generator.pth",
     )
-    parser.add_argument("--decoder-config-name", type=str, default="firefly_gan_vq")
+    parser.add_argument("--decoder-config-name", type=str, default="gan_vq")
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--half", action="store_true")
     parser.add_argument("--compile", action="store_true")
