@@ -51,7 +51,7 @@ def get_model(
     checkpoint_path: str = "checkpoints/fish-speech-1.4/firefly-gan-vq-fsq-8x1024-21hz-generator.pth",
     device: str | torch.device = "cuda",
 ):
-    with initialize(version_base="1.3", config_path="../../fish_speech/configs"):
+    with initialize(version_base="1.3", config_path="../../src/configs"):
         cfg = compose(config_name=config_name)
 
     model = instantiate(cfg)

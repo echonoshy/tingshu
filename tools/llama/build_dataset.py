@@ -11,8 +11,8 @@ import numpy as np
 from loguru import logger
 from tqdm import tqdm
 
-from fish_speech.datasets.protos.text_data_pb2 import Semantics, Sentence, TextData
-from fish_speech.datasets.protos.text_data_stream import pack_pb_stream
+from src.datasets.protos.text_data_pb2 import Semantics, Sentence, TextData
+from src.datasets.protos.text_data_stream import pack_pb_stream
 from tools.file import load_filelist
 
 # To avoid CPU overload

@@ -8,13 +8,13 @@ __data__ = "2019-05-03"
 
 import re
 
-from fish_speech.text.chn_text_norm.cardinal import Cardinal
-from fish_speech.text.chn_text_norm.date import Date
-from fish_speech.text.chn_text_norm.digit import Digit
-from fish_speech.text.chn_text_norm.fraction import Fraction
-from fish_speech.text.chn_text_norm.money import Money
-from fish_speech.text.chn_text_norm.percentage import Percentage
-from fish_speech.text.chn_text_norm.telephone import TelePhone
+from src.text.chn_text_norm.cardinal import Cardinal
+from src.text.chn_text_norm.date import Date
+from src.text.chn_text_norm.digit import Digit
+from src.text.chn_text_norm.fraction import Fraction
+from src.text.chn_text_norm.money import Money
+from src.text.chn_text_norm.percentage import Percentage
+from src.text.chn_text_norm.telephone import TelePhone
 
 CURRENCY_NAMES = (
     "(人民币|美元|日元|英镑|欧元|马克|法郎|加拿大元|澳元|港币|先令|芬兰马克|爱尔兰镑|"

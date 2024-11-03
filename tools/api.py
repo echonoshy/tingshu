@@ -32,10 +32,10 @@ from loguru import logger
 
 pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
-# from fish_speech.models.vqgan.lit_module import VQGAN
-from fish_speech.models.vqgan.modules.firefly import FireflyArchitecture
-from fish_speech.text.chn_text_norm.text import Text as ChnNormedText
-from fish_speech.utils import autocast_exclude_mps, set_seed
+# from src.models.vqgan.lit_module import VQGAN
+from src.models.vqgan.modules.firefly import FireflyArchitecture
+from src.text.chn_text_norm.text import Text as ChnNormedText
+from src.utils import autocast_exclude_mps, set_seed
 from tools.commons import ServeTTSRequest
 from tools.file import AUDIO_EXTENSIONS, audio_to_bytes, list_files, read_ref_text
 from tools.llama.generate import (

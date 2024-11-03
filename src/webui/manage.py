@@ -25,10 +25,10 @@ print(sys.path)
 cur_work_dir = Path(os.getcwd()).resolve()
 print("You are in ", str(cur_work_dir))
 
-from fish_speech.i18n import i18n
-from fish_speech.webui.launch_utils import Seafoam, is_module_installed, versions_html
+from src.i18n import i18n
+from src.webui.launch_utils import Seafoam, is_module_installed, versions_html
 
-config_path = cur_work_dir / "fish_speech" / "configs"
+config_path = cur_work_dir / "src" / "configs"
 vqgan_yml_path = config_path / "firefly_gan_vq.yaml"
 llama_yml_path = config_path / "text2semantic_finetune.yaml"
 
@@ -194,8 +194,8 @@ def change_infer(
         yield build_html_error_message(i18n("Infer interface is closed"))
 
 
-js = load_data_in_raw("fish_speech/webui/js/animate.js")
-css = load_data_in_raw("fish_speech/webui/css/style.css")
+js = load_data_in_raw("src/webui/js/animate.js")
+css = load_data_in_raw("src/webui/css/style.css")
 
 data_pre_output = (cur_work_dir / "data").resolve()
 default_model_output = (cur_work_dir / "results").resolve()
@@ -518,7 +518,7 @@ def train_process(
 
         train_cmd = [
             PYTHON,
-            "fish_speech/train.py",
+            "src/train.py",
             "--config-name",
             "text2semantic_finetune",
             f"project={project}",
@@ -1131,7 +1131,7 @@ with gr.Blocks(
                 help_button = gr.Button("\U00002753", scale=0, min_width=80)  # question
                 train_btn = gr.Button(i18n("Start Training"), variant="primary")
 
-    footer = load_data_in_raw("fish_speech/webui/html/footer.html")
+    footer = load_data_in_raw("src/webui/html/footer.html")
     footer = footer.format(
         versions=versions_html(),
         api_docs="https://speech.fish.audio/inference/#http-api",

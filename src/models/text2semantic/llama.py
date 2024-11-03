@@ -15,8 +15,8 @@ from torch.nn.attention import SDPBackend, sdpa_kernel
 from torch.utils.checkpoint import checkpoint
 from transformers import AutoTokenizer
 
-from fish_speech.conversation import SEMANTIC_TOKEN
-from fish_speech.utils import RankedLogger
+from src.conversation import SEMANTIC_TOKEN
+from src.utils import RankedLogger
 
 from .lora import LoraConfig, setup_lora
 

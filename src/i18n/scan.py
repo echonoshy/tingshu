@@ -32,7 +32,7 @@ def extract_i18n_strings(node):
 # for each AST, extract the i18n strings
 
 strings = []
-folders = ["fish_speech", "tools"]
+folders = ["src", "tools"]
 # for filename in glob.iglob("**/*.py", recursive=True):
 for folder in folders:
     for f in Path(folder).rglob("*.py"):

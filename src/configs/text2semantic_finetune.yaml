@@ -23,7 +23,7 @@ tokenizer:
 
 # Dataset Configuration
 train_dataset:
-  _target_: fish_speech.datasets.semantic.AutoTextSemanticInstructionDataset
+  _target_: src.datasets.semantic.AutoTextSemanticInstructionDataset
   proto_files:
     - data/protos
   tokenizer: ${tokenizer}
@@ -33,7 +33,7 @@ train_dataset:
   interactive_prob: 0.7
 
 val_dataset:
-  _target_: fish_speech.datasets.semantic.AutoTextSemanticInstructionDataset
+  _target_: src.datasets.semantic.AutoTextSemanticInstructionDataset
   proto_files:
     - data/protos
   tokenizer: ${tokenizer}
@@ -43,7 +43,7 @@ val_dataset:
   interactive_prob: 0.7
 
 data:
-  _target_: fish_speech.datasets.semantic.SemanticDataModule
+  _target_: src.datasets.semantic.SemanticDataModule
   train_dataset: ${train_dataset}
   val_dataset: ${val_dataset}
   num_workers: 4
@@ -53,9 +53,9 @@ data:
 
 # Model Configuration
 model:
-  _target_: fish_speech.models.text2semantic.lit_module.TextToSemantic
+  _target_: src.models.text2semantic.lit_module.TextToSemantic
   model: 
-    _target_: fish_speech.models.text2semantic.llama.BaseTransformer.from_pretrained
+    _target_: src.models.text2semantic.llama.BaseTransformer.from_pretrained
     path: ${pretrained_ckpt_path}
     load_weights: true
     max_length: ${max_length}
@@ -73,7 +73,7 @@ model:
     _target_: torch.optim.lr_scheduler.LambdaLR
     _partial_: true
     lr_lambda:
-      _target_: fish_speech.scheduler.get_constant_schedule_with_warmup_lr_lambda
+      _target_: src.scheduler.get_constant_schedule_with_warmup_lr_lambda
       _partial_: true
       num_warmup_steps: 10
 

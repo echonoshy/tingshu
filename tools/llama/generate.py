@@ -16,8 +16,8 @@ import torch._inductor.config
 from loguru import logger
 from tqdm import tqdm
 
-from fish_speech.conversation import CODEBOOK_PAD_TOKEN_ID
-from fish_speech.text import clean_text, split_text
+from src.conversation import CODEBOOK_PAD_TOKEN_ID
+from src.text import clean_text, split_text
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 torch._inductor.config.coordinate_descent_tuning = True
@@ -28,7 +28,7 @@ if hasattr(torch._inductor.config, "fx_graph_cache"):
     torch._inductor.config.fx_graph_cache = True
 
 
-from fish_speech.models.text2semantic.llama import (
+from src.models.text2semantic.llama import (
     BaseTransformer,
     DualARTransformer,
     NaiveTransformer,
