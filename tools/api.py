@@ -399,6 +399,14 @@ class MsgPackRequest(HttpRequest):
         )
 
 
+# Define Kui app
+openapi = OpenAPI(
+    {
+        "title": "Fake Speech API",
+        "version": "1.4.2",
+    },
+).routes
+
 app = Kui(
     routes=routes + openapi[1:],  # Remove the default route
     exception_handlers={
