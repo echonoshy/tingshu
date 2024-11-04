@@ -1,7 +1,10 @@
 {
   "audios": [
-      { "title": "我记得", "src": "resources/audio/我记得.mp3" },
-      { "title": "南方姑娘", "src": "resources/audio/南方姑娘.mp3" },
-      { "title": "阴天快乐", "src": "resources/audio/阴天快乐.mp3" }
+      { "title": "001-前言", "src": "web/resources/audio/leijun/001-前言.wav" },
+      { "title": "002-第一部分-小米创业历程", "src": "web/resources/audio/leijun/002-第一部分-小米创业历程" },
+      { "title": "003-第一章-奇迹时代-梦想落地", "src": "web/resources/audio/leijun/003-第一章-奇迹时代-梦想落地" },
+      { "title": "004-第二章-低谷", "src": "web/resources/audio/leijun/004-第二章-低谷" },
+      { "title": "005-第三章-重回增长", "src": "web/resources/audio/leijun/005-第三章-重回增长" },
+      { "title": "006-第四章-新十年新征程", "src": "web/resources/audio/leijun/006-第四章-新十年新征程" }
   ]
 }

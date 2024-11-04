@@ -381,15 +381,6 @@ def parse_args():
     return parser.parse_args()
 
 
-# Define Kui app
-openapi = OpenAPI(
-    {
-        "title": "Fish Speech API",
-        "version": "1.4.2",
-    },
-).routes
-
-
 class MsgPackRequest(HttpRequest):
     async def data(
         self,
