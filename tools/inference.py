@@ -1,12 +1,14 @@
+
+import click 
+import json 
 import gc
 import os
-from pathlib import Path
 import numpy as np
 import torch
 import queue
+import pydub 
 from loguru import logger
-from functools import partial
-import soundfile as sf
+from pathlib import Path
 
 import pyrootutils
 pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
@@ -84,7 +86,7 @@ class SpeechInference:
         request = dict(
             device=self.decoder_model.device,
             max_new_tokens=max_new_tokens,
-            text=text,
+            text=self.normalize_text(text),
             top_p=top_p,
             repetition_penalty=repetition_penalty,
             temperature=temperature,
@@ -147,24 +149,109 @@ class SpeechInference:
             return ChnNormedText(raw_text=text).normalize()
         return text
 
-# Example usage
-if __name__ == "__main__":
-    # Initialize the model
-    model = SpeechInference()
-    
-    # Generate speech
-    try:
-        sample_rate, audio = model.generate(
-            text="这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。这是一本复盘之书，核心内容来自小米十周年总结。2020年上半年，我和同事们花了大约半年时间，对小米创业历程进行了深入思考与讨论，形成了一系列结论。我的职业生涯经历了30多年的沉浮摔打，从最初学生时代的创业尝试，到开发通用软件、电商、游戏，再到做移动互联网工具、云服务、消费电子硬件、IoT（物联网）智能设备等等，直到去年进入智能电动汽车行业。就像我年轻时听过的鲍勃·迪伦的歌里说的那样，​“答案在风中飘荡”​。一路求索，关于商业思考，不同时期的答案一直在我的脑海中回响飘荡。商业的目的是什么，如何让商业实现最大化的现实意义？我的答案是：效率。它能给最多的人带来最大化的美好幸福感。小米自创立至今12年只干了一件事：用互联网的思维和方法，改造传统制造业，实践、丰富“互联网+制造”​，推动商业社会的效率革命，以实现最大化的用户利益和社会经济运转效率。",
-            reference_audio="resources/leijun/leijun.wav",
-            reference_text="我当年进的金山，整个公司也只有5-6个人啊，肯定不算什么大厂吧。我觉得进一个好的小厂，和这个小厂一起成长，也是挺好的一种经历。我觉得我每天都在忙着各种有趣的事情，其实眼里有光的人是不会精神内好的。我觉得呢，没有套路就是最好的套路，很多人都说我真诚，其实呢真诚呢让我一路上啊，有不少贵人相助。",
-            top_p=0.7,
-            repetition_penalty=1.2,
-            temperature=0.7
-        )
+
+def bytes_to_audio(audio:bytes, sample_rate:int, output_file, format:str="mp3"):
+    audio = (audio * 32767).astype(np.int16)
+    audio_segment = pydub.AudioSegment(
+        audio.tobytes(),
+        frame_rate=sample_rate,
+        sample_width=audio.dtype.itemsize,
+        channels=1                              # 单声道
+    )
+    audio_segment.export(output_file, format=format)
+
+
+def load_text_files(text_dir: Path):
+    """Loads all text files and returns a list of file names and content."""
+    text_files = []
+    for text_path in text_dir.glob("*.txt"):
+        with open(text_path, "r") as file:
+            text_content = file.read()
+        text_files.append((text_path.stem, text_content))
+    return text_files
+
+def generate_audio_from_text(model, text_content: str, reference_audio: Path, reference_text: str):
+    """Generates audio using the model and returns the sample rate and audio data."""
+    sample_rate, audio = model.generate(
+        text=text_content,
+        reference_audio=str(reference_audio),
+        reference_text=reference_text
+    )
+    return sample_rate, audio
+
+def save_audio(audio, sample_rate: int, output_path: Path, format="mp3"):
+    """Saves audio data to a specified file format."""
+    os.makedirs(output_path.parent, exist_ok=True)
+    bytes_to_audio(audio, sample_rate, output_file=str(output_path), format=format)
+
+def generate_info_json(resources_dir: Path, output_json: Path):
+    """Generates a JSON file with audio metadata based on the generated mp3 files."""
+    text_dir = resources_dir / "books"
+    audio_dir = resources_dir / "audios"
+
+    # Initialize dictionary structure for JSON
+    info_data = {"audios": []}
+
+    # Loop through each text file to create audio info entries
+    for text_path in sorted(text_dir.glob("*.txt")):
+        text_name = text_path.stem  # Get filename without extension
+        audio_src = audio_dir / f"{text_name}.mp3"  # Define audio path
         
-        output_path = "gen_speech.wav"
-        sf.write(output_path, audio, sample_rate, 'PCM_16')
-        print(f"Generated audio with sample rate {sample_rate}Hz and length {len(audio)} samples")
-    except Exception as e:
-        print(f"Generation failed: {e}")
+        # Add audio entry to list
+        info_data["audios"].append({
+            "title": text_name,
+            "src": str(audio_src)
+        })
+
+    # Write the dictionary to a JSON file
+    with open(output_json, "w", encoding="utf-8") as json_file:
+        json.dump(info_data, json_file, ensure_ascii=False, indent=4)
+    
+    logger.info(f"info.json has been generated at {output_json}")
+
+
+@click.command()
+@click.argument("resources_dir")
+def main(resources_dir: str):
+    model = SpeechInference()
+
+    # Define resource directories and files
+    resources_dir = Path(resources_dir)
+    text_dir = resources_dir / "books"
+    reference_audio = resources_dir / "reference.wav"
+    reference_text_path = resources_dir / "reference.txt"
+    output_dir = resources_dir / "audios"
+    output_json = resources_dir / "info.json"
+
+    # Check if resource files exist
+    if not reference_audio.exists() or not reference_text_path.exists():
+        logger.error("Error: Reference audio or text file is missing.")
+        return
+
+    # Read the reference text content
+    try:
+        with open(reference_text_path, "r") as f_ref:
+            reference_text = f_ref.read()
+    except IOError as e:
+        logger.error(f"Error reading reference text file: {e}")
+        return
+
+    # Iterate over and generate audio for each text file
+    text_files = load_text_files(text_dir)
+    for text_name, text_content in text_files:
+        try:
+            sample_rate, audio = generate_audio_from_text(
+                model, text_content, reference_audio, reference_text
+            )
+            output_file = output_dir / f"{text_name}.mp3"
+            save_audio(audio, sample_rate, output_file, format="mp3")
+            logger.info(f"Generated mp3 file: {output_file.name} in {output_dir}")
+        except Exception as e:
+            logger.error(f"Error processing {text_name}: {e}")
+
+    # Generate info.json after all audio files have been created
+    generate_info_json(resources_dir, output_json)
+
+
+if __name__ == "__main__":
+    main(resources_dir="resources/leijun")

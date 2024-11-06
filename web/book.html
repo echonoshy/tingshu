@@ -137,7 +137,7 @@
 
         // 加载对应书籍的录音文件列表
         if (bookId) {
-            const filePath = `info/${bookId}.json`;
+            const filePath = `resources/${bookId}/info.json`;
             
             // 发起 AJAX 请求加载音频数据
             fetch(filePath)
