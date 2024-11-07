@@ -105,7 +105,7 @@
 </head>
 <body>
     <div class="player-container">
-        <h2>听舒</h2>
+        <h2 id="bookTitle">听舒</h2>
         <div class="now-playing" id="nowPlaying">当前播放: </div>
         <audio id="audioPlayer" controls>
             您的浏览器不支持 audio 元素。
@@ -129,6 +129,13 @@
         }
 
         const bookId = getUrlParameter('bookId'); // 获取书籍 ID
+        const bookTitle = getUrlParameter('bookTitle'); // 获取书籍标题
+
+        // 设置 h2 标签的内容为书籍标题
+        if (bookTitle) {
+            document.getElementById('bookTitle').textContent = bookTitle;
+        }
+
         let playlist = [];
         let currentTrack = 0;
         const audioPlayer = document.getElementById("audioPlayer");
@@ -138,12 +145,12 @@
         // 加载对应书籍的录音文件列表
         if (bookId) {
             const filePath = `resources/${bookId}/info.json`;
-            
+
             // 发起 AJAX 请求加载音频数据
             fetch(filePath)
                 .then(response => response.json())
                 .then(data => {
-                    playlist = data.audios; // 假设 JSON 中的音频列表在 "audios" 属性中
+                    playlist = data.audios;
                     renderPlaylist();
                     playCurrentTrack();
                 })
