@@ -188,8 +188,9 @@ def save_audio(audio, sample_rate: int, output_path: Path, format="mp3"):
 def generate_info_json(resources_dir: Path, output_json: Path):
     """Generates a JSON file with audio metadata based on the generated mp3 files."""
     text_dir = resources_dir / "books"
-    audio_dir = "/" / resources_dir / "audios"      # TIP: web的根路径和项目根路径不一致
-
+    audio_dir_orig = resources_dir / "audios"      # TIP: web的根路径和项目根路径不一致
+    audio_dir = Path(*audio_dir_orig.parts[1:])
+    
     # Initialize dictionary structure for JSON
     info_data = {"audios": []}
 
