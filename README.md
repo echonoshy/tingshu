@@ -15,6 +15,9 @@
 
 ## 快速开始 | Quick Start
 
+[点击这里观看视频](https://youtu.be/TdCrbDvICbw)
+
+
 ### 1. 安装环境 | Install Environment
 ```bash
 ./scripts/install.sh
