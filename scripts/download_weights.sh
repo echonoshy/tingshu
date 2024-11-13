@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # 定义下载 URL 和目标文件名
-URL="https://github.com/echonoshy/tingshu/releases/download/v1.0.0/weights.tar.gz"
+# URL="https://github.com/echonoshy/tingshu/releases/download/v1.0.0/weights.tar.gz"
+URL="https://ghp.ci/https://github.com/echonoshy/tingshu/releases/download/v1.0.0/weights.tar.gz"
 FILE="weights.tar.gz"
 
 # 下载文件
