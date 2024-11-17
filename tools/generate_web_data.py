@@ -159,6 +159,7 @@ def bytes_to_audio(audio:bytes, sample_rate:int, output_file, format:str="mp3"):
         sample_width=audio.dtype.itemsize,
         channels=1                              # 单声道
     )
+    audio_segment = audio_segment.set_frame_rate(16000)         # 降采样，减少文件大小
     audio_segment.export(output_file, format=format)
 
 
