@@ -11,6 +11,8 @@
 
 ## 项目预览 | Preview
 
+[点击进入项目主页｜Home](https://echonoshy.github.io/tingshu/web)
+
 ![Web Interface Preview](assets/web-view.jpg)
 
 ## 快速开始 | Quick Start
