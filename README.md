@@ -20,25 +20,38 @@
 [点击这里观看视频](https://youtu.be/TdCrbDvICbw)
 
 
-### 1. 安装环境 | Install Environment
+1. 安装环境 | Install Environment
 ```bash
 ./scripts/install.sh
 ```
 
-### 2. 下载模型权重 | Download Model Weights
+2. 下载模型权重 | Download Model Weights
 ```bash
 ./scripts/download_weights.sh
 ```
 
-### 3. 启动 Web UI | Run Web Interface
+3. 启动 Web UI | Run Web Interface
 ```bash
 ./scripts/run_gradio.sh
 ```
 
-### 4. 生成前端音频数据 | Generate Audio Data
+4. 生成前端音频数据 | Generate Audio Data
 ```bash
 ./scripts/generate_web_data.sh
 ```
+
+## 项目优化 ｜ TODO
+- [ ] 1. 使用新方案替代tts方式生成的录音缺乏情感，顿挫，听感不好问题。     
+      Replace the TTS-generated recordings to address issues of lacking emotion, intonation, and poor listening experience.  
+
+- [ ] 2. 更新web ui, 替换静态加载模式    
+      Update web ui and switch from static loading mode. 
+
+- [ ] 3. 增加英文版自传数据内容    
+      Add autobiographical content in the English version.
+
+- [ ] 4. 适当增加背景音乐内容、音效      
+      Appropriately enhance background music and sound effects. 
 
 ## 免责声明 | Disclaimer
 
