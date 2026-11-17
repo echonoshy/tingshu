@@ -2,6 +2,7 @@ import os
 import queue
 import threading
 import time
+from concurrent.futures import Future
 from contextlib import nullcontext
 from dataclasses import dataclass
 from pathlib import Path
@@ -567,19 +568,23 @@ def launch_thread_safe_queue(
     compile: bool = False,
 ):
     input_queue = queue.Queue()
-    init_event = threading.Event()
+    initialized = Future()
 
     def worker():
-        model, decode_one_token = load_model(
-            checkpoint_path, device, precision, compile=compile
-        )
-        with torch.device(device):
-            model.setup_caches(
-                max_batch_size=1,
-                max_seq_len=model.config.max_seq_len,
-                dtype=next(model.parameters()).dtype,
+        try:
+            model, decode_one_token = load_model(
+                checkpoint_path, device, precision, compile=compile
             )
-        init_event.set()
+            with torch.device(device):
+                model.setup_caches(
+                    max_batch_size=1,
+                    max_seq_len=model.config.max_seq_len,
+                    dtype=next(model.parameters()).dtype,
+                )
+        except BaseException as error:
+            initialized.set_exception(error)
+            return
+        initialized.set_result(None)
 
         while True:
             item: GenerateRequest | None = input_queue.get()
@@ -600,7 +605,7 @@ def launch_thread_safe_queue(
                 response_queue.put(WrappedGenerateResponse(status="error", response=e))
 
     threading.Thread(target=worker, daemon=True).start()
-    init_event.wait()
+    initialized.result()
 
     return input_queue
 

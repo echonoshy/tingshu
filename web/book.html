@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>听舒｜Tingshu</title>
-    <link rel="icon" href="/web/assets/favicon-tin.ico" type="image/x-icon">
+    <link rel="icon" href="assets/favicon-tin.ico" type="image/x-icon">
     <style>
       body {
           font-family: Arial, sans-serif;
           display: flex;
           justify-content: center;
           align-items: center;
-          height: 100vh;
+          min-height: 100vh;
+          box-sizing: border-box;
+          padding: 12px;
           background-color: #e9ecef;
           margin: 0;
       }
@@ -20,7 +22,8 @@
           padding: 30px;
           box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.15);
           border-radius: 12px;
-          width: 380px;
+          box-sizing: border-box;
+          width: min(440px, 100%);
           text-align: center;
       }
       .button-container {
@@ -105,16 +108,17 @@
 </head>
 <body>
     <div class="player-container">
+        <a href="index.html">返回书架</a>
         <h2 id="bookTitle">听舒</h2>
-        <div class="now-playing" id="nowPlaying">当前播放: </div>
+        <div class="now-playing" id="nowPlaying" role="status">正在加载音频…</div>
         <audio id="audioPlayer" controls>
             您的浏览器不支持 audio 元素。
         </audio>
         <div class="button-container">
-          <button onclick="prevTrack()">
+          <button onclick="prevTrack()" disabled>
               <i class="fas fa-backward"></i> 上一曲
           </button>
-          <button onclick="nextTrack()">
+          <button onclick="nextTrack()" disabled>
               下一曲 <i class="fas fa-forward"></i>
           </button>
       </div>
@@ -144,32 +148,45 @@
 
         // 加载对应书籍的录音文件列表
         if (bookId) {
-            const filePath = `resources/${bookId}/info.json`;
+            const filePath = `resources/${encodeURIComponent(bookId)}/info.json`;
 
             // 发起 AJAX 请求加载音频数据
             fetch(filePath)
-                .then(response => response.json())
+                .then(response => {
+                    if (response.status === 404) return {audios: []};
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return response.json();
+                })
                 .then(data => {
                     playlist = data.audios;
-                    renderPlaylist();
+                    if (!playlist.length) {
+                        nowPlayingText.textContent = "本书音频待上线";
+                        return;
+                    }
+                    document.querySelectorAll(".button-container button").forEach(button => {
+                        button.disabled = false;
+                    });
                     playCurrentTrack();
                 })
                 .catch(error => {
-                    console.log("加载音频数据失败:", error);
-                    alert("无法加载音频数据，请检查文件路径或网络连接。");
+                    console.error("加载音频数据失败:", error);
+                    nowPlayingText.textContent = "音频清单加载失败，请刷新重试";
                 });
         } else {
-            console.log("未提供 bookId 参数");
+            nowPlayingText.textContent = "请先从书架选择一本书";
         }
 
         // 渲染播放列表
         function renderPlaylist() {
-            playlistContainer.innerHTML = playlist.map((track, index) => `
-                <div class="playlist-item ${index === currentTrack ? 'active' : ''}" 
-                     onclick="playTrack(${index})">
-                    ${track.title}
-                </div>
-            `).join('');
+            playlistContainer.replaceChildren();
+            playlist.forEach((track, index) => {
+                const item = document.createElement("div");
+                item.className = "playlist-item";
+                item.classList.toggle("active", index === currentTrack);
+                item.textContent = track.title;
+                item.addEventListener("click", () => playTrack(index));
+                playlistContainer.appendChild(item);
+            });
             updateNowPlaying();
         }
 
@@ -195,12 +212,14 @@
 
         // 播放上一曲
         function prevTrack() {
+            if (!playlist.length) return;
             currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
             playCurrentTrack();
         }
 
         // 播放下一曲
         function nextTrack() {
+            if (!playlist.length) return;
             currentTrack = (currentTrack + 1) % playlist.length;
             playCurrentTrack();
         }

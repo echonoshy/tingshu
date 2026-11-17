@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Install model inference environment on Linux (GPU)
 
@@ -17,10 +18,10 @@ apt update -y && apt install -y \
     libportaudiocpp0
 
 # 安装指定版本的 PyTorch 和相关依赖
-pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1
+python -m pip install torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1
 
 # 更新动态链接库缓存
 ldconfig
 
 # 安装 Python 项目及其可选的 `stable` 依赖项
-pip3 install -e .[stable]
+python -m pip install -e '.[stable]'

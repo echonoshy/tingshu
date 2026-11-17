@@ -13,6 +13,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
+    "click>=8.0",
     "numpy<=1.26.4",
     "transformers>=4.35.2",
     "datasets==2.18.0",
