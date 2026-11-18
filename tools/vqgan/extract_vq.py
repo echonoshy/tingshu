@@ -10,26 +10,19 @@ from random import Random
 import click
 import numpy as np
 import torch
-import torchaudio
 from hydra import compose, initialize
 from hydra.utils import instantiate
 from lightning import LightningModule
 from loguru import logger
 from omegaconf import OmegaConf
 
+from tools.audio import load_mono_audio
 from tools.file import AUDIO_EXTENSIONS, list_files, load_filelist
 
 # register eval resolver
 OmegaConf.register_new_resolver("eval", eval)
 # This file is used to convert the audio files to text files using the Whisper model.
 # It's mainly used to generate the training data for the VQ model.
-
-backends = torchaudio.list_audio_backends()
-
-if "ffmpeg" in backends:
-    backend = "ffmpeg"
-else:
-    backend = "soundfile"
 
 RANK = int(os.environ.get("SLURM_PROCID", 0))
 WORLD_SIZE = int(os.environ.get("SLURM_NTASKS", 1))
@@ -58,6 +51,7 @@ def get_model(
     state_dict = torch.load(
         checkpoint_path,
         map_location=device,
+        weights_only=True,
     )
     if "state_dict" in state_dict:
         state_dict = state_dict["state_dict"]
@@ -86,19 +80,11 @@ def process_batch(files: list[Path], model) -> float:
 
     for file in files:
         try:
-            wav, sr = torchaudio.load(
-                str(file), backend=backend
-            )  # Need to install libsox-dev
+            wav = torch.from_numpy(load_mono_audio(file, model.spec_transform.sample_rate)).to(model.device)
         except Exception as e:
             logger.error(f"Error reading {file}: {e}")
             continue
 
-        if wav.shape[0] > 1:
-            wav = wav.mean(dim=0, keepdim=True)
-
-        wav = torchaudio.functional.resample(
-            wav.cuda(), sr, model.spec_transform.sample_rate
-        )[0]
         total_time += len(wav) / model.spec_transform.sample_rate
         max_length = max(max_length, len(wav))
 
@@ -106,6 +92,8 @@ def process_batch(files: list[Path], model) -> float:
         audio_lengths.append(len(wav))
         new_files.append(file)
 
+    if not wavs:
+        return 0.0
     files = new_files
 
     # Pad to max length

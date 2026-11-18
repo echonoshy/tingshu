@@ -12,6 +12,7 @@ pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 def generate_info_json(resources_dir: Path, output_json: Path):
     """Index chapters that have a corresponding non-empty audio file."""
     tracks = []
+    unavailable = []
     for chapter in sorted((resources_dir / "books").glob("*.txt")):
         audio = resources_dir / "audios" / f"{chapter.stem}.mp3"
         if audio.is_file() and audio.stat().st_size:
@@ -19,17 +20,20 @@ def generate_info_json(resources_dir: Path, output_json: Path):
                 "title": chapter.stem,
                 "src": f"resources/{quote(resources_dir.name, safe='')}/audios/{quote(audio.name, safe='')}",
             })
+        else:
+            unavailable.append(chapter.stem)
 
     with TemporaryDirectory(dir=output_json.parent) as staging:
         manifest = Path(staging) / output_json.name
-        manifest.write_text(json.dumps({"audios": tracks}, ensure_ascii=False, indent=4), encoding="utf-8")
+        manifest.write_text(json.dumps({"audios": tracks, "unavailable": unavailable}, ensure_ascii=False, indent=4), encoding="utf-8")
         manifest.replace(output_json)
 
 
 @click.command()
+@click.option("--device", default=None, help="Inference device (defaults to CUDA if available, otherwise CPU)")
 @click.option("--resources_dir", type=click.Path(exists=True, file_okay=False, path_type=Path),
               default="web/resources/leijun", show_default=True, help="Book directory under web/resources")
-def main(resources_dir: Path):
+def main(resources_dir: Path, device: str | None):
     reference_audio = resources_dir / "reference.wav"
     reference_text_path = resources_dir / "reference.txt"
     chapters = sorted((resources_dir / "books").glob("*.txt"))
@@ -41,7 +45,7 @@ def main(resources_dir: Path):
     reference_text = reference_text_path.read_text(encoding="utf-8")
     from tools.speech_inference import SpeechInference, bytes_to_audio
 
-    model = SpeechInference()
+    model = SpeechInference(device=device)
     audio_dir = resources_dir / "audios"
     audio_dir.mkdir(exist_ok=True)
     failures = []

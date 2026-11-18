@@ -250,7 +250,7 @@ def update_examples():
 
 
 def build_app():
-    with gr.Blocks(theme=gr.themes.Base()) as app:
+    with gr.Blocks(analytics_enabled=False) as app:
         gr.Markdown(HEADER_MD)
 
         # Use light theme by default
@@ -402,7 +402,7 @@ def build_app():
                         streaming=True,
                         autoplay=True,
                         interactive=False,
-                        show_download_button=True,
+                        buttons=["download"],
                     )
                 with gr.Row():
                     with gr.Column(scale=3):
@@ -493,7 +493,7 @@ def parse_args():
         default="weights/firefly-gan-vq-fsq-8x1024-21hz-generator.pth",
     )
     parser.add_argument("--decoder-config-name", type=str, default="firefly_gan_vq")
-    parser.add_argument("--device", type=str, default="cuda")
+    parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--half", action="store_true")
     parser.add_argument("--compile", action="store_true")
     parser.add_argument("--max-gradio-length", type=int, default=0)
@@ -504,7 +504,10 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    args.precision = torch.half if args.half else torch.bfloat16
+    if args.device == "cpu":
+        args.precision = torch.float32
+    else:
+        args.precision = torch.float16 if args.half else torch.bfloat16
 
     logger.info("Loading Llama model...")
     llama_queue = launch_thread_safe_queue(
@@ -541,4 +544,4 @@ if __name__ == "__main__":
     logger.info("Warming up done, launching the web UI...")
 
     app = build_app()
-    app.launch(show_api=True)
+    app.launch(theme=gr.themes.Base())

@@ -1,0 +1,31 @@
+[
+    {
+        "id": "leijun",
+        "title": "小米创业思考",
+        "author": "雷军 徐洁云",
+        "cover": "cover/leijun.jpg",
+        "wordCount": "20.9 万字",
+        "manifest": "resources/leijun/info.json"
+    },
+    {
+        "id": "jobs",
+        "title": "斯蒂夫·乔布斯传",
+        "author": "沃尔特·艾萨克森",
+        "cover": "cover/jobs.jpg",
+        "wordCount": "46.6 万字"
+    },
+    {
+        "id": "drucker",
+        "title": "卓有成效的管理者",
+        "author": "彼得·德鲁克",
+        "cover": "cover/drucker.jpg",
+        "wordCount": "11.4 万字"
+    },
+    {
+        "id": "musk",
+        "title": "硅谷钢铁侠：埃隆·马斯克",
+        "author": "阿什利·万顿",
+        "cover": "cover/musk.jpg",
+        "wordCount": "24.8 万字"
+    }
+]
