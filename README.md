@@ -1,5 +1,5 @@
 # Tingshu (听舒)
-> 让作者的声音直达听众 | Bringing the author's voice directly to you
+> AI 合成有声书 | AI-narrated audiobooks
 
 [![GitHub stars](https://img.shields.io/github/stars/echonoshy/tingshu?style=social)](https://github.com/echonoshy/tingshu/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/echonoshy/tingshu?style=social)](https://github.com/echonoshy/tingshu/network/members)
@@ -7,7 +7,7 @@
 [![GitHub repo size](https://img.shields.io/github/repo-size/echonoshy/tingshu)](https://github.com/echonoshy/tingshu)
 [![GitHub language count](https://img.shields.io/github/languages/count/echonoshy/tingshu)](https://github.com/echonoshy/tingshu)
 [![GitHub top language](https://img.shields.io/github/languages/top/echonoshy/tingshu)](https://github.com/echonoshy/tingshu)
-[![GitHub last commit](https://img.shields.io/github/last-commit/echonoshy/tingshu?color=red)](https://github.com/echonoshy/tingshu/commits/main)
+[![GitHub last commit](https://img.shields.io/github/last-commit/echonoshy/tingshu?color=red)](https://github.com/echonoshy/tingshu/commits/master)
 
 ## 项目预览 | Preview
 
@@ -17,27 +17,23 @@
 
 ## 快速开始 | Quick Start
 
-[点击这里观看视频](https://youtu.be/TdCrbDvICbw)
+直接打开[线上书架](https://echonoshy.github.io/tingshu/web/)即可收听已上架章节。已有音频为 AI 合成朗读，素材记录见[来源与授权说明](docs/media-sources.md)。
 
+生成音频前准备 Git、[uv](https://docs.astral.sh/uv/getting-started/installation/) 和 FFmpeg。当前锁定环境使用 **Python 3.12**，适用于 Linux x86-64 和 Apple Silicon macOS 14+。有 CUDA 时启用 GPU，其他设备默认使用 CPU。
 
-1. 安装环境 | Install Environment
 ```bash
 ./scripts/install.sh
-```
-
-2. 下载模型权重 | Download Model Weights
-```bash
 ./scripts/download_weights.sh
-```
-
-3. 启动 Web UI | Run Web Interface
-```bash
 ./scripts/run_gradio.sh
 ```
 
-4. 生成前端音频数据 | Generate Audio Data
+下载脚本会校验 [v1.0.0 发布包](https://github.com/echonoshy/tingshu/releases/tag/v1.0.0)的大小和 SHA-256，并安装到 `weights/`。已有该压缩包时可用 `./scripts/download_weights.sh --archive /path/to/weights.tar.gz`，已有模型目录会保留。
+
+批量生成需要将已获许可的 `reference.wav`、`reference.txt` 和章节文本放进所选书目目录。
+
 ```bash
-./scripts/generate_web_data.sh
+./scripts/generate_web_data.sh --resources_dir web/resources/leijun
+uv run --locked python -m unittest discover -s tests -v
 ```
 
 ## 项目优化 ｜ TODO

@@ -694,9 +694,6 @@ init_vqgan_yml = load_yaml_data_in_fact(vqgan_yml_path)
 init_llama_yml = load_yaml_data_in_fact(llama_yml_path)
 
 with gr.Blocks(
-    head="<style>\n" + css + "\n</style>",
-    js=js,
-    theme=seafoam,
     analytics_enabled=False,
     title="Fish Speech",
 ) as demo:
@@ -1236,4 +1233,4 @@ with gr.Blocks(
         outputs=[infer_error],
     )
 
-demo.launch(inbrowser=True)
+demo.launch(inbrowser=True, css=css, js=js, theme=seafoam)

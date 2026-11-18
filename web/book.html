@@ -32,7 +32,7 @@
           gap: 10px; /* 设置按钮之间的间距 */
           margin-top: 10px;
       }
-      h2 {
+      h1 {
           color: #333;
           margin-top: 0;
           font-size: 24px;
@@ -40,13 +40,12 @@
       }
       .now-playing {
           font-size: 14px;
-          color: #888;
+          color: #595959;
           margin: 10px 0;
       }
       audio {
           width: 100%;
           margin: 15px 0;
-          outline: none;
           border-radius: 8px;
           background-color: #f8f9fa;
       }
@@ -57,181 +56,73 @@
           cursor: pointer;
           border: none;
           border-radius: 5px;
-          background-color: #007bff;
+          background-color: #0858a8;
           color: white;
           transition: background-color 0.3s, transform 0.2s;
           display: flex;
           align-items: center;
           gap: 8px;
       }
-      button:hover {
-          background-color: #0056b3;
-          transform: scale(1.05);
+      button:enabled:hover {
+          background-color: #064485;
       }
-      button:active {
-          transform: scale(1);
+      button:disabled {
+          cursor: default;
+          opacity: .55;
+      }
+      :focus-visible {
+          outline: 3px solid #1359a6;
+          outline-offset: 3px;
       }
       .playlist {
-          margin-top: 20px;
+          list-style: none;
+          margin: 20px 0 0;
           max-height: 500px;
           overflow-y: auto;
           border: 1px solid #ddd;
           border-radius: 5px;
           background-color: #f8f9fa;
-          padding: 10px;
+          padding: 6px;
       }
-      .playlist-item {
-          padding: 8px 10px;
-          cursor: pointer;
-          border-bottom: 1px solid #eee;
-          transition: background-color 0.2s;
-          display: flex;
-          align-items: center;
+      button.playlist-item {
+          width: 100%;
+          margin: 0;
+          padding: 10px;
+          border-bottom: 1px solid #e5e7eb;
+          text-align: left;
+          background-color: transparent;
           color: #333;
       }
-      .playlist-item:last-child {
-          border-bottom: none;
+      button.playlist-item:hover, button.playlist-item[aria-current="true"] {
+          background-color: #e1eefc;
+          color: #12395e;
       }
-      .playlist-item:hover {
-          background-color: #e9ecef;
-      }
-      .playlist-item.active {
-          background-color: #cce5ff;
-          font-weight: bold;
-          color: #004085;
-      }
-      .playlist-item i {
-          margin-right: 8px;
-          color: #007bff;
-      }
+      #unavailable { margin-top: 15px; text-align: left; }
+      #unavailable ul { padding-left: 24px; }
+      #synthetic-notice { color: #595959; font-size: .875rem; }
   </style>
 </head>
 <body>
-    <div class="player-container">
+    <main class="player-container">
         <a href="index.html">返回书架</a>
-        <h2 id="bookTitle">听舒</h2>
-        <div class="now-playing" id="nowPlaying" role="status">正在加载音频…</div>
-        <audio id="audioPlayer" controls>
-            您的浏览器不支持 audio 元素。
-        </audio>
-        <div class="button-container">
-          <button onclick="prevTrack()" disabled>
-              <i class="fas fa-backward"></i> 上一曲
-          </button>
-          <button onclick="nextTrack()" disabled>
-              下一曲 <i class="fas fa-forward"></i>
-          </button>
-      </div>
-        <div class="playlist" id="playlist"></div>
-    </div>
-
-    <script>
-        // 获取 URL 参数
-        function getUrlParameter(name) {
-            const params = new URLSearchParams(window.location.search);
-            return params.get(name);
-        }
-
-        const bookId = getUrlParameter('bookId'); // 获取书籍 ID
-        const bookTitle = getUrlParameter('bookTitle'); // 获取书籍标题
-
-        // 设置 h2 标签的内容为书籍标题
-        if (bookTitle) {
-            document.getElementById('bookTitle').textContent = bookTitle;
-        }
-
-        let playlist = [];
-        let currentTrack = 0;
-        const audioPlayer = document.getElementById("audioPlayer");
-        const playlistContainer = document.getElementById("playlist");
-        const nowPlayingText = document.getElementById("nowPlaying");
-
-        // 加载对应书籍的录音文件列表
-        if (bookId) {
-            const filePath = `resources/${encodeURIComponent(bookId)}/info.json`;
-
-            // 发起 AJAX 请求加载音频数据
-            fetch(filePath)
-                .then(response => {
-                    if (response.status === 404) return {audios: []};
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    return response.json();
-                })
-                .then(data => {
-                    playlist = data.audios;
-                    if (!playlist.length) {
-                        nowPlayingText.textContent = "本书音频待上线";
-                        return;
-                    }
-                    document.querySelectorAll(".button-container button").forEach(button => {
-                        button.disabled = false;
-                    });
-                    playCurrentTrack();
-                })
-                .catch(error => {
-                    console.error("加载音频数据失败:", error);
-                    nowPlayingText.textContent = "音频清单加载失败，请刷新重试";
-                });
-        } else {
-            nowPlayingText.textContent = "请先从书架选择一本书";
-        }
-
-        // 渲染播放列表
-        function renderPlaylist() {
-            playlistContainer.replaceChildren();
-            playlist.forEach((track, index) => {
-                const item = document.createElement("div");
-                item.className = "playlist-item";
-                item.classList.toggle("active", index === currentTrack);
-                item.textContent = track.title;
-                item.addEventListener("click", () => playTrack(index));
-                playlistContainer.appendChild(item);
-            });
-            updateNowPlaying();
-        }
-
-        // 更新当前播放信息
-        function updateNowPlaying() {
-            nowPlayingText.textContent = `当前播放: ${playlist[currentTrack]?.title || '未知'}`;
-        }
-
-        // 播放指定索引的音频
-        function playTrack(index) {
-            currentTrack = index;
-            playCurrentTrack();
-        }
-
-        // 播放当前选定的音频
-        function playCurrentTrack() {
-            if (playlist[currentTrack]) {
-                audioPlayer.src = playlist[currentTrack].src;
-                audioPlayer.play().catch(error => console.log("播放失败:", error));
-                renderPlaylist();
-            }
-        }
-
-        // 播放上一曲
-        function prevTrack() {
-            if (!playlist.length) return;
-            currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
-            playCurrentTrack();
-        }
-
-        // 播放下一曲
-        function nextTrack() {
-            if (!playlist.length) return;
-            currentTrack = (currentTrack + 1) % playlist.length;
-            playCurrentTrack();
-        }
-
-        // 音频结束时自动播放下一曲
-        audioPlayer.addEventListener("ended", nextTrack);
-
-        // 处理音频加载错误
-        audioPlayer.addEventListener("error", function(e) {
-            console.log("音频加载错误:", e);
-            alert("音频加载失败，请检查文件路径是否正确");
-        });
-    </script>
+        <h1 id="bookTitle">听舒</h1>
+        <p id="synthetic-notice" hidden>AI 合成朗读</p>
+        <p class="now-playing" id="nowPlaying" role="status">正在加载音频…</p>
+        <div id="player-controls" hidden>
+            <audio id="audioPlayer" controls preload="metadata" aria-label="章节播放器">
+                您的浏览器不支持 audio 元素。
+            </audio>
+            <div class="button-container">
+                <button id="previous" type="button" disabled>上一章</button>
+                <button id="next" type="button" disabled>下一章</button>
+            </div>
+        </div>
+        <ol class="playlist" id="playlist" aria-label="可听章节" hidden></ol>
+        <details id="unavailable" hidden>
+            <summary>待补音频的章节</summary>
+            <ul></ul>
+        </details>
+    </main>
+    <script type="module" src="book.js"></script>
 </body>
 </html>

@@ -27,9 +27,11 @@ class WebDataTests(unittest.TestCase):
         for name in ("0", "3", "orphan"):
             (self.audio / f"{name}.mp3").write_bytes(b"audio fixture")
         generate_info_json(self.book, self.manifest)
-        self.assertEqual(json.loads(self.manifest.read_text())["audios"], [
+        catalog = json.loads(self.manifest.read_text())
+        self.assertEqual(catalog["audios"], [
             {"title": n, "src": f"resources/sample/audios/{n}.mp3"} for n in ("0", "3")
         ])
+        self.assertEqual(catalog["unavailable"], ["1", "2"])
 
     def test_special_characters_round_trip_in_browser_urls(self):
         from urllib.parse import unquote, urlsplit

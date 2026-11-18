@@ -5,7 +5,6 @@ import hydra
 import numpy as np
 import soundfile as sf
 import torch
-import torchaudio
 import pyrootutils
 
 from hydra import compose, initialize
@@ -13,6 +12,7 @@ from hydra.utils import instantiate
 from loguru import logger
 from omegaconf import OmegaConf
 
+from tools.audio import load_mono_audio
 from tools.file import AUDIO_EXTENSIONS
 
 pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
@@ -78,14 +78,8 @@ def main(input_path, output_path, config_name, checkpoint_path, device):
         logger.info(f"Processing in-place reconstruction of {input_path}")
 
         # Load audio
-        audio, sr = torchaudio.load(str(input_path))
-        if audio.shape[0] > 1:
-            audio = audio.mean(0, keepdim=True)
-        audio = torchaudio.functional.resample(
-            audio, sr, model.spec_transform.sample_rate
-        )
-
-        audios = audio[None].to(device)
+        audio = load_mono_audio(input_path, model.spec_transform.sample_rate)
+        audios = torch.from_numpy(audio)[None, None].to(device)
         logger.info(
             f"Loaded audio with {audios.shape[2] / model.spec_transform.sample_rate:.2f} seconds"
         )

@@ -14,7 +14,6 @@ import ormsgpack
 import pyrootutils
 import soundfile as sf
 import torch
-import torchaudio
 from baize.datastructures import ContentType
 from kui.asgi import (
     Body,
@@ -36,6 +35,7 @@ pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 from src.models.vqgan.modules.firefly import FireflyArchitecture
 from src.text.chn_text_norm.text import Text as ChnNormedText
 from src.utils import autocast_exclude_mps, set_seed
+from tools.audio import load_mono_audio
 from tools.commons import ServeTTSRequest
 from tools.file import AUDIO_EXTENSIONS, audio_to_bytes, list_files, read_ref_text
 from tools.llama.generate import (
@@ -45,14 +45,6 @@ from tools.llama.generate import (
     launch_thread_safe_queue,
 )
 from tools.vqgan.inference import load_model as load_decoder_model
-
-backends = torchaudio.list_audio_backends()
-
-if "ffmpeg" in backends:
-    backend = "ffmpeg"
-else:
-    backend = "soundfile"
-
 
 def wav_chunk_header(sample_rate=44100, bit_depth=16, channels=1):
     buffer = io.BytesIO()
@@ -90,28 +82,10 @@ async def other_exception_handler(exc: "Exception"):
     )
 
 
-def load_audio(reference_audio, sr):
-    if len(reference_audio) > 255 or not Path(reference_audio).exists():
-        audio_data = reference_audio
-        reference_audio = io.BytesIO(audio_data)
-
-    waveform, original_sr = torchaudio.load(reference_audio, backend=backend)
-
-    if waveform.shape[0] > 1:
-        waveform = torch.mean(waveform, dim=0, keepdim=True)
-
-    if original_sr != sr:
-        resampler = torchaudio.transforms.Resample(orig_freq=original_sr, new_freq=sr)
-        waveform = resampler(waveform)
-
-    audio = waveform.squeeze().numpy()
-    return audio
-
-
 def encode_reference(*, decoder_model, reference_audio, enable_reference_audio):
     if enable_reference_audio and reference_audio is not None:
         # Load audios, and prepare basic info here
-        reference_audio_content = load_audio(
+        reference_audio_content = load_mono_audio(
             reference_audio, decoder_model.spec_transform.sample_rate
         )
 

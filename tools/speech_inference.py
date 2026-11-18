@@ -24,10 +24,14 @@ class SpeechInference:
         llama_checkpoint_path: str = "weights",
         decoder_checkpoint_path: str = "weights/firefly-gan-vq-fsq-8x1024-21hz-generator.pth",
         decoder_config_name: str = "firefly_gan_vq",
-        device: str = "cuda",
-        precision = torch.bfloat16,
-        compile: bool = True
+        device: str | None = None,
+        precision: torch.dtype | None = None,
+        compile: bool = False,
     ):
+        if device is None:
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+        if precision is None:
+            precision = torch.float32 if device == "cpu" else torch.bfloat16
         self.device = device
         self.precision = precision
         self.compile = compile
